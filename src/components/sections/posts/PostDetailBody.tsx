@@ -1,67 +1,68 @@
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import Link from "next/link";
 
-// Mock data untuk keperluan rekomendasi
-const DUMMY_POSTS = [
-  {
-    slug: "5-tips-renovasi-rumah",
-    title: "5 Tips Renovasi Rumah dengan Budget Minim",
-    date: "15 Maret 2026",
-    image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=600&auto=format&fit=crop"
-  },
-  {
-    slug: "tren-desain-interior-2026",
-    title: "Tren Desain Interior yang Akan Populer di 2026",
-    date: "10 Maret 2026",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop"
-  },
-  {
-    slug: "memilih-material-atap-terbaik",
-    title: "Panduan Memilih Material Atap Terbaik untuk Iklim Tropis",
-    date: "05 Maret 2026",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600&auto=format&fit=crop"
-  }
-];
-
 interface PostDetailBodyProps {
-  currentSlug: string;
-  currentTitle: string;
+  post: any;
+  allPosts: any[];
 }
 
-export function PostDetailBody({ currentSlug, currentTitle }: PostDetailBodyProps) {
-  // Filter postingan untuk rekomendasi (kecuali postingan yang sedang dibaca)
-  const recommendedPosts = DUMMY_POSTS.filter(post => post.slug !== currentSlug).slice(0, 3);
+export function PostDetailBody({ post, allPosts }: PostDetailBodyProps) {
+  const IMAGE_BASE_URL = 'httpa://api.saeboemi.com/';
+  
+  // Filter rekomendasi (kecuali yang sedang dibaca)
+  const recommendedPosts = allPosts
+    .filter(item => item.slug !== post.slug)
+    .slice(0, 3);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Main Content Area */}
-          <div className="w-full lg:w-2/3">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              {currentTitle}
-            </h1>
-            <div className="aspect-video w-full bg-gray-200 rounded-xl mb-8 overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop" 
-                alt={currentTitle} 
-                className="w-full h-full object-cover"
-              />
+          <div className="w-full lg:w-2/3 min-w-0"> {/* min-w-0 penting untuk flex child agar tidak meluap */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-full">
+                {post.category}
+              </span>
+              <span className="text-gray-400 text-sm">
+                {new Date(post.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
             </div>
             
-            <div className="prose prose-lg max-w-none text-gray-600">
-              <p>
-                Membangun atau merenovasi rumah seringkali menjadi tantangan tersendiri, terutama jika menyangkut manajemen waktu dan pengelolaan anggaran. Oleh karena itu, penting untuk merencanakan setiap langkah dengan matang bersama tim ahli yang sudah berpengalaman di bidangnya.
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight break-words">
+              {post.title}
+            </h1>
+
+            <div className="aspect-video w-full bg-gray-200 rounded-xl mb-8 overflow-hidden relative">
+              {post.imageUrl ? (
+                <img 
+                  src={`${IMAGE_BASE_URL}${post.imageUrl}`} 
+                  alt={post.title} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400 uppercase tracking-widest bg-gray-100">
+                  No Image
+                </div>
+              )}
+            </div>
+            
+            {/* RENDER RICH TEXT HTML */}
+            <div className="prose prose-lg max-w-none text-gray-600 prose-headings:text-gray-900 prose-strong:text-gray-900 break-words">
+              {/* Kutipan Singkat sebagai pembuka */}
+              <p className="text-xl font-medium text-gray-800 border-l-4 border-yellow-500 pl-6 my-8 italic leading-relaxed">
+                {post.excerpt}
               </p>
-              <h3 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">Poin Penting Konstruksi</h3>
-              <p>
-                Salah satu kunci utama dalam konstruksi adalah pemilihan material yang tepat. Material berkualitas tinggi tidak hanya menjamin estetika, tetapi juga kekuatan dan ketahanan bangunan dalam jangka waktu yang panjang. Selain itu, pengawasan lapangan (quality control) yang ketat sangat dibutuhkan untuk menghindari kesalahan teknis.
-              </p>
-              <p>
-                Di Saeboemi Studio, kami selalu memastikan bahwa proses rancang bangun berjalan secara transparan. Klien akan dilibatkan dalam tahap perencanaan untuk memastikan desain sesuai dengan visi mereka, sementara eksekusi di lapangan diserahkan kepada tenaga kerja profesional kami.
-              </p>
-              {/* Tambahkan konten panjang lainnya di sini */}
+              
+              {/* Isi Utama - Pastikan tidak ada whitespace-pre agar tidak memaksa baris panjang ke kanan */}
+              <div 
+                className="rich-text-content"
+                dangerouslySetInnerHTML={{ __html: post.content }} 
+              />
             </div>
           </div>
 
@@ -73,29 +74,54 @@ export function PostDetailBody({ currentSlug, currentTitle }: PostDetailBodyProp
               </h3>
               
               <div className="flex flex-col gap-6">
-                {recommendedPosts.map((post) => (
-                  <Link href={`/posts/${post.slug}`} key={post.slug} className="group flex gap-4 items-center">
-                    <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-yellow-600 transition-colors">
-                        {post.title}
-                      </h4>
-                      <p className="text-sm text-gray-500 mt-1">{post.date}</p>
-                    </div>
-                  </Link>
-                ))}
+                {recommendedPosts.length > 0 ? (
+                  recommendedPosts.map((item) => (
+                    <Link href={`/posts/${item.slug}`} key={item.id} className="group flex gap-4 items-center">
+                      <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-gray-200">
+                        {item.imageUrl && (
+                          <img 
+                            src={`${IMAGE_BASE_URL}${item.imageUrl}`} 
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-yellow-600 transition-colors">
+                          {item.title}
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                           {new Date(item.createdAt).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-gray-400 italic text-sm">Tidak ada artikel terkait.</p>
+                )}
               </div>
             </div>
           </div>
 
         </div>
       </div>
+
+      <style jsx global>{`
+        .rich-text-content p {
+          margin-bottom: 1.25rem;
+          line-height: 1.75;
+        }
+        .rich-text-content img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 0.5rem;
+        }
+        /* Menghapus paksaan pre-wrap jika ada dari quill */
+        .rich-text-content * {
+          white-space: normal !important;
+          word-break: break-word !important;
+        }
+      `}</style>
     </section>
   );
 }

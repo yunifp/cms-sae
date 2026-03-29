@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Home, ArrowRight, Play, UserCircle2, SlidersHorizontal, Watch } from 'lucide-react';
+import { Home, ArrowRight, UserCircle2, SlidersHorizontal, Watch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -51,7 +51,7 @@ export function WhyChooseUs() {
             viewport={{ once: true }}
           >
             <Button asChild className="bg-[#DDF247] text-black hover:bg-white hover:text-black rounded-none px-6 py-6 font-semibold transition-colors duration-300">
-              <Link href="/explore">
+              <Link href="https://wa.link/w7chgd">
                 Konsultasi Sekarang <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -83,8 +83,8 @@ export function WhyChooseUs() {
         {/* Separator Line */}
         <hr className="border-white/10 mb-16" />
 
-        {/* Video Thumbnail */}
-        <motion.div 
+      
+        {/* <motion.div 
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -96,13 +96,13 @@ export function WhyChooseUs() {
           />
           <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
           
-          {/* Play Button Overlay */}
+   
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-24 h-24 rounded-full border-2 border-[#DDF247] flex items-center justify-center text-[#DDF247] transition-transform duration-300 group-hover:scale-110">
               <Play className="w-8 h-8 ml-2 fill-current" />
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
       </div>
     </section>

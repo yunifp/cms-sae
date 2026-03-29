@@ -1,13 +1,19 @@
 import { PageHeader } from "@/components/sections/about/PageHeader";
 import { Contact } from "@/components/sections/home/Contact";
 import { PostShowcase } from "@/components/sections/posts/PostShowCase";
+import { getContactSettingsAPI } from "@/services/contactSettingApi";
+import { getPostsAPI } from "@/services/postApi";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Blog & News | Kombong - Home Builder Contractor",
+  title: "Blog & News | Saeboemi Studio",
   description: "Read our latest news, tips, and insights about construction and renovations.",
 };
 
-export default function PostsPage() {
+export default async function PostsPage() {
+  const posts = await getPostsAPI();
+ const contactData = await getContactSettingsAPI();
   return (
     <>
       <PageHeader 
@@ -16,15 +22,11 @@ export default function PostsPage() {
           { name: "HOME", href: "/" },
           { name: "POSTS", href: "/posts" }
         ]}
-        // Gambar latar belakang yang relevan dengan artikel/berita (bisa disesuaikan)
         bgImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2070&auto=format&fit=crop" 
       />
 
-      {/* Menampilkan daftar post */}
-      <PostShowcase />
-      
-      {/* Memanggil komponen Contact seperti di halaman lain */}
-      <Contact/>
+      <PostShowcase posts={posts} />
+      <Contact data={contactData} />
     </>
   );
 }

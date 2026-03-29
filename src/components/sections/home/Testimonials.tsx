@@ -1,19 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from 'framer-motion';
 import { Home, Star } from 'lucide-react';
 
-export function Testimonials() {
-  const reviews = [
-    { title: "Kualitas Pengerjaan Luar Biasa", author: "Reza Mahendra" },
-    { title: "Melampaui Ekspektasi", author: "Dina Karmila" },
-    { title: "Hasil yang Memuaskan", author: "Budi Santoso" },
-    { title: "Tim yang Bisa Diandalkan", author: "Andi Pratama" },
-    { title: "Sangat Perhatian pada Detail", author: "Siska Saraswati" },
-    { title: "Profesional dan Transparan", author: "Faisal Akbar" },
-  ];
-
-  const dummyText = "Kerja sama dengan Saeboemi Studio sangat menyenangkan. Mulai dari perencanaan desain hingga eksekusi di lapangan, semuanya berjalan transparan dan sesuai dengan budget yang disepakati di awal. Timnya sangat komunikatif dan profesional dalam mewujudkan hunian impian kami.";
+export function Testimonials({ data }: { data: any[] }) {
+  // Gunakan data dari props, jika kosong tampilkan array kosong
+  const reviews = data || [];
 
   return (
     <section className="w-full bg-[#121418] py-24 px-4 lg:px-12">
@@ -44,36 +37,43 @@ export function Testimonials() {
 
         {/* Testimonial Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reviews.map((review, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              // Background sedikit lebih terang dari #121418 agar bentuk kotaknya terlihat
-              className="bg-[#181A1F] p-8 md:p-10 flex flex-col gap-6"
-            >
-              {/* 5 Stars */}
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#DDF247] text-[#DDF247]" />
-                ))}
-              </div>
-              
-              <h3 className="text-white text-lg md:text-xl font-medium">
-                {review.title}
-              </h3>
-              
-              <p className="text-gray-400 text-sm leading-relaxed mb-4 flex-grow">
-                {dummyText}
-              </p>
-              
-              <p className="text-gray-300 text-sm font-medium">
-                {review.author}
-              </p>
-            </motion.div>
-          ))}
+          {reviews.length > 0 ? (
+            reviews.map((review: any, index: number) => (
+              <motion.div 
+                key={review.id || index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-[#181A1F] p-8 md:p-10 flex flex-col gap-6 h-full"
+              >
+                {/* Stars dinamis berdasarkan rating dari database */}
+                <div className="flex gap-1">
+                  {[...Array(review.rating || 5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-[#DDF247] text-[#DDF247]" />
+                  ))}
+                </div>
+                
+                <h3 className="text-white text-lg md:text-xl font-medium">
+                  {review.title}
+                </h3>
+                
+                <p className="text-gray-400 text-sm leading-relaxed mb-4 flex-grow italic">
+                  &quot;{review.review}&quot;
+                </p>
+                
+                <div className="flex flex-col">
+                  <p className="text-[#DDF247] text-sm font-bold tracking-wide uppercase">
+                    — {review.name}
+                  </p>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full py-20 text-center text-gray-600 border border-dashed border-white/5">
+              Belum ada testimoni yang ditampilkan.
+            </div>
+          )}
         </div>
 
       </div>

@@ -1,22 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from 'framer-motion';
-import { Home, ArrowRight } from 'lucide-react';
+import { Home, ArrowRight, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
 
-export function RecentProjects() {
-  // Array gambar dummy dari Unsplash
-  const images = {
-    top: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop", // Rumah modern kiri
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop", // Rumah kayu kanan
-    ],
-    bottom: [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop", // Gedung biru
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1000&auto=format&fit=crop", // Gedung hijau
-      "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=2070&auto=format&fit=crop", // Balkon/atap
-    ]
+export function RecentProjects({ projects }: { projects: any[] }) {
+  const IMAGE_BASE_URL = 'httpa://api.saeboemi.com/';
+
+  // Kita ambil 5 proyek terbaru agar grid terisi maksimal
+  // Jika database hanya punya 3, slice akan otomatis menyesuaikan
+  const latestProjects = projects.slice(0, 5);
+  
+  // Baris Atas: Ambil 2 proyek pertama
+  const topRow = latestProjects.slice(0, 2);
+  // Baris Bawah: Ambil sisanya (proyek ke 3, 4, dan 5)
+  const bottomRow = latestProjects.slice(2, 5);
+
+  const getThumbnail = (project: any) => {
+    const thumb = project.images?.find((img: any) => img.type === 'thumbnail');
+    return thumb ? `${IMAGE_BASE_URL}${thumb.url}` : null;
   };
 
   return (
@@ -55,43 +60,77 @@ export function RecentProjects() {
 
         {/* Gallery Grid */}
         <div className="flex flex-col gap-4 md:gap-6">
-          {/* Top Row (2 items) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {images.top.map((img, idx) => (
+          {/* Baris Atas (2 Items) */}
+          <div className={`grid grid-cols-1 ${topRow.length > 1 ? 'md:grid-cols-2' : ''} gap-4 md:gap-6`}>
+            {topRow.map((project, idx) => (
               <motion.div 
-                key={idx}
+                key={project.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.2 }}
-                className="w-full h-[300px] md:h-[450px] bg-cover bg-center overflow-hidden group cursor-pointer"
+                className="relative w-full h-[300px] md:h-[450px] overflow-hidden group cursor-pointer rounded-sm bg-[#181A1F]"
               >
-                <div 
-                  className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                  style={{ backgroundImage: `url('${img}')` }}
-                />
+                <Link href={`/projects/${project.id}`}>
+                  {getThumbnail(project) ? (
+                    <Image 
+                      src={getThumbnail(project)!}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 gap-2">
+                      <ImageIcon className="w-12 h-12" />
+                      <span className="text-xs uppercase tracking-widest">No Image</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                    <p className="text-[#DDF247] text-sm uppercase tracking-widest mb-2">{project.category}</p>
+                    <h3 className="text-white text-2xl font-medium">{project.title}</h3>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
           
-          {/* Bottom Row (3 items) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {images.bottom.map((img, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 + (idx * 0.2) }}
-                className="w-full h-[250px] md:h-[350px] bg-cover bg-center overflow-hidden group cursor-pointer"
-              >
-                <div 
-                  className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                  style={{ backgroundImage: `url('${img}')` }}
-                />
-              </motion.div>
-            ))}
-          </div>
+          {/* Baris Bawah (Up to 3 Items) */}
+          {bottomRow.length > 0 && (
+            <div className={`grid grid-cols-1 md:grid-cols-${bottomRow.length} gap-4 md:gap-6`}>
+              {bottomRow.map((project, idx) => (
+                <motion.div 
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 + (idx * 0.2) }}
+                  className="relative w-full h-[250px] md:h-[350px] overflow-hidden group cursor-pointer rounded-sm bg-[#181A1F]"
+                >
+                  <Link href={`/projects/${project.id}`}>
+                    {getThumbnail(project) ? (
+                      <Image 
+                        src={getThumbnail(project)!}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 gap-2">
+                        <ImageIcon className="w-10 h-10" />
+                        <span className="text-[10px] uppercase tracking-widest">No Image</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                      <p className="text-[#DDF247] text-xs uppercase tracking-widest mb-1">{project.category}</p>
+                      <h3 className="text-white text-lg font-medium">{project.title}</h3>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>

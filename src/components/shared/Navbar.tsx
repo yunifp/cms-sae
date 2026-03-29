@@ -64,7 +64,7 @@ export function Navbar() {
             asChild 
             className="bg-[#DDF247] text-black hover:bg-white hover:text-black transition-colors duration-300 rounded-none px-6 py-6 font-semibold"
           >
-            <Link href="/contact">
+            <Link href="https://wa.link/w7chgd">
               Konsultasi Sekarang <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -108,7 +108,7 @@ export function Navbar() {
                   className="mt-6 w-full h-12 bg-[#DDF247] text-black hover:bg-white hover:text-black rounded-none transition-colors duration-300 text-sm font-semibold" 
                   asChild
                 >
-                  <Link href="/contact">Konsultasi Sekarang</Link>
+                  <Link href="https://wa.link/w7chgd">Konsultasi Sekarang</Link>
                 </Button>
               </nav>
             </SheetContent>

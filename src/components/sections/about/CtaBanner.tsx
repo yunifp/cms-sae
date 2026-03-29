@@ -25,7 +25,7 @@ export function CtaBanner() {
           viewport={{ once: true }}
         >
           <Button asChild className="bg-[#DDF247] text-black hover:bg-white hover:text-black rounded-none px-8 py-6 font-semibold transition-colors duration-300">
-            <Link href="/contact">
+            <Link href="https://wa.link/w7chgd">
               Hubungi Tim Kami <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from 'framer-motion';
@@ -10,21 +11,19 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export function Faq() {
-  const faqs = [
-    {
-      question: "Layanan apa saja yang ditawarkan oleh Saeboemi Studio?",
-      answer: "Kami menawarkan layanan komprehensif yang mencakup desain arsitektur, desain interior, bangun rumah dari nol, hingga renovasi dan perluasan bangunan."
-    },
-    {
-      question: "Bagaimana cara memulai proyek bersama tim Saeboemi?",
-      answer: "Anda bisa memulainya dengan menghubungi kami via website atau WhatsApp. Tim kami akan menjadwalkan konsultasi awal untuk berdiskusi mengenai visi hunian, timeline, serta budget yang Anda miliki."
-    },
-    {
-      question: "Apakah pembuatan estimasi biaya (RAB) berbayar?",
-      answer: "Tidak, kami memberikan estimasi anggaran awal secara gratis setelah sesi konsultasi pertama, dengan komitmen transparansi biaya agar budget Anda tetap terkontrol."
-    }
-  ];
+// Tambahkan parameter faqs di sini
+export function Faq({ faqs }: { faqs: any[] }) {
+  
+  // Jika tidak ada data dari database, kita tampilkan pesan atau return null
+  if (!faqs || faqs.length === 0) {
+    return (
+      <section className="w-full bg-[#121418] py-24 px-4 lg:px-12">
+        <div className="container mx-auto text-center text-gray-500">
+          Belum ada pertanyaan FAQ yang ditambahkan.
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-[#121418] py-24 px-4 lg:px-12">
@@ -73,22 +72,21 @@ export function Faq() {
               />
             </div>
             <p className="text-gray-300 text-sm md:text-base">
-              Ada pertanyaan lain? <a href="mailto:halo@saeboemistudio.com" className="text-[#DDF247] hover:underline">halo@saeboemistudio.com</a>
+              Ada pertanyaan lain? <a href="mailto:studiosaboemi@gmail.com" className="text-[#DDF247] hover:underline">studiosaboemi@gmail.com</a>
             </p>
           </motion.div>
 
-          {/* Kolom Kanan: Accordion FAQ */}
+          {/* Kolom Kanan: Accordion FAQ Dinamis */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
             <Accordion type="single" collapsible className="w-full flex flex-col gap-4">
-              {faqs.map((faq, index) => (
+              {faqs.map((faq) => (
                 <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`} 
-                  // Custom styling untuk box accordion agar menyerupai desain
+                  key={faq.id} 
+                  value={`item-${faq.id}`} 
                   className="border-none bg-[#181A1F] px-6 py-2 rounded-sm"
                 >
                   <AccordionTrigger className="text-white text-base md:text-lg font-medium hover:no-underline hover:text-[#DDF247] text-left">
