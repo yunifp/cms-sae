@@ -1,14 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PageHeader } from "@/components/sections/about/PageHeader";
 import { PostDetailBody } from "@/components/sections/posts/PostDetailBody";
 import { notFound } from "next/navigation";
 import { getPostBySlugAPI, getPostsAPI } from "@/services/postApi";
 
-export const dynamic = "force-dynamic";
+
 
 export const metadata = {
   title: "Post Details | Saeboemi Studio",
   description: "Read full article on Saeboemi construction blog.",
 };
+
+export async function generateStaticParams() {
+  const posts = await getPostsAPI();
+
+  if (!posts || posts.length === 0) return [];
+  
+  return posts.map((post: any) => ({
+    slug: post.slug.toString(),
+  }));
+}
 
 export default async function PostDetailPage({ 
   params 
